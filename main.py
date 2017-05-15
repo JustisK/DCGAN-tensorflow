@@ -84,9 +84,13 @@ def main(_):
         raise Exception("[!] Train a model first, then run test mode")
 
     # Visualization
-    z_sample = np.random.uniform(-0.9, 0.9, size=(FLAGS.batch_size, dcgan.z_dim))
-    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})[0:4]
-    save_images(samples, [4, 1], './samples/test_me.png')
+    x = np.random.uniform(-0.9, 0.9, size=(100)) 
+    y = np.random.uniform(-0.9, 0.9, size=(100)) 
+    delta = 1.0/32.0
+    arrays = [p*x+(1-p)*y for p in np.arange(-16*delta, 1+16*delta-0.0001, delta)]
+    z_sample = np.stack(arrays)
+    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+    save_images(samples, [8, 8], './samples/test_me.png')
 
 if __name__ == '__main__':
   tf.app.run()
